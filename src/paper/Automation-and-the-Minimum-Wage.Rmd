@@ -1,0 +1,266 @@
+---
+title: "Raising the Minimum Wage (Slightly) Increases Automation"
+short: "Automation and the Minimum Wage"
+journal: "NONE"
+month: "December"
+year: "2021"
+author:
+  - name: Anthony Flores
+    email: anthonyfloresokc@gmail.com
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../../out/paper") })
+preamble:
+  \newcolumntype{d}{S[input-symbols = ()]}
+output:
+  rticles::aea_article:
+        extra_dependencies: ["booktabs", "graphicx", "threeparttable", "pdflscape", "siunitx"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval = FALSE)
+# if (!require("pacman")) install.packages("pacman")
+# pacman::p_load(kableExtra_latex_packages())
+# \eject \pdfpagewidth=210mm \pdfpageheight=297mm
+
+
+#  preamble:
+#    \captionsetup[figure]{name=Test}
+```
+
+# Introduction
+
+Past research on the minimum wage often focuses on how it influences the
+probability of job loss for workers. Recent evidence suggests this
+effect is smaller than economists once believed.[^1] However, some
+economists argue that the looming threat of automation will exacerbate
+the adverse employment effects of a minimum wage increase. Their logic
+is that raising the minimum wage lowers the relative cost of capital
+(robots and machines), incentivizing firms to invest more into R&D for
+automating low-wage work. Assuming lower-educated workers are more
+likely to hold automatable jobs, they would feel the brunt of this
+impact.
+
+[^1]: See, for example, Card and Kruger (1994); Card and Kruger (2000);
+    Dube, Lester, and Reich (2010); Allegretto, Dube, and Reich (2011);
+    and Addison, Blackburn, and Cotti (2012).
+
+One often-cited piece of research on this topic is "People versus
+Machines: The Impact of Minimum Wages on Automatable Jobs" by Grace
+Lordan and David Neumark (2018). In the paper, Lordan and Neumark
+examine how minimum wage increases affect the share of automatable
+employment held by "low-skilled workers," which they define as having a
+high-school education or less.[^2] In their conclusion, Lordan and
+Newmark (2018) found that "increasing the minimum wage decreases
+significantly the share of automatable employment held by low-skill
+workers..." In this paper, I seek to replicate and expand on their
+research by adding a new econometric model and extending their dataset
+to include 2016--2018, a period where many states have continued to
+raise their minimum wage.
+
+[^2]: In this paper, we will refer the group Lordan and Neumark refer to
+    as "low-skilled workers" as "lower-educated workers" as it is more
+    accurately describes what is being measured.
+
+# Data
+
+Data are pooled from the 1980--2018 Monthly Current Population Survey
+(CPS), a joint project of the Census Bureau and Bureau of Labor
+Statistics. In it, they survey approximately 60,000 households every
+month and examine a variety of demographic and labor force
+characteristics. The characteristics of interest for this study are
+education (must have high-school equivalent or less), occupation,
+industry, year/month of the survey, state, urban/rural, and age (must be
+over eighteen).[^3] Also used was a dataset including the 12-month
+moving average of the minimum wage for each state in each given month
+and the prior 11 months.[^4] This helped to capture some of the lagged
+effects of the minimum wage.
+
+[^3]: This particular data extract is provided by IPUMS CPS:
+    <https://cps.ipums.org/cps/index.shtml>
+
+[^4]: State minimum wage data is available by the courtesy of David
+    Neumark on his personal website:
+    <https://www.socsci.uci.edu/~dneumark/datasets.html>
+
+<!-- The survey creates what they call "rotation groups," which are surveyed -->
+
+<!-- consecutively for four months, dropped from the survey for eight months, -->
+
+<!-- then interviewed for four additional months. I modified the dataset to -->
+
+<!-- only include the first interview. -->
+
+# Methodology
+
+The model specification requires that each of the occupations listed in
+the CPS data be assigned a Routine Task Intensity (RTI) value. RTI
+measures the level of repetitiveness present within an occupation's
+tasks. RTI is computed with the following formula.
+
+```{=tex}
+\begin {center}\centering 
+\large
+ $RTI_k = ln(T_k^R) - ln(T_k^M) -ln(T_k^A)$
+\end {center}
+```
+Where $k$ is the occupation and each $T$ value represents how
+repetitive, manual, or abstract the tasks in a job are. Repetitive tasks
+are those where near-identical actions are repeated in the same order.
+Manual tasks require physical effort and the worker to perform a complex
+series of actions that require dexterity and some ingenuity. Abstract
+tasks are cognitively intensive, rarely repetitive, and require a good
+deal of creativity. The main idea behind the measure is that a highly
+repetitive job is more suitable to be automated by machines than a job
+comprised mostly of manual and abstract tasks. This RTI equation comes
+from a paper by Autor and Dorn (2013), and my data for the RTI of each
+census occupation comes from David Dorn's publicly available data
+files[^5]. These values were assigned to occupations using a modified
+version of the 1990 census occupation codes so I used a crosswalk to
+convert to the standard 1990 codes for proper assignment of each
+occupation's RTI values.
+
+[^5]: David Autor and David Dorn. "The Growth of Low Skill Service Jobs
+    and the Polarization of the U.S. Labor Market." American Economic
+    Review, 103(5), 1553-1597, 2013.
+
+The next step was computing the share of automatable employment (RSH).
+
+```{=tex}
+\begin {center}\centering 
+\Large
+$RSH_{iat} = \dfrac{ \sum\limits_{k=1}^K(L_{iat}) \cdot \mathbf 1 [RTI_k >RTI^{P66}]}{ \sum\limits_{k=1}^K(L_{iat})}$
+\end {center}
+```
+This equation indexes the industry $i$, area $a$ (states divided into
+urban and rural areas), and year $t$. The denominator sums the total
+number of lower-education workers, $L$, in a given industry, state, and
+year. The numerator checks each occupation in an industry first to see
+if it is an automatable job by use of the indicator function
+$\mathbf 1[\cdot]$. An automatable job is defined here by it being in
+the 66th percentile ($RTI^{P66}$) or above for $RTI$ as it is in Autor
+and Dorn (2013). The result is the proportion of lower-educated workers
+in automatable jobs given the industry, state, and year.
+
+With the $RSH$ measure in hand, I moved toward using the following
+specification
+
+$$RSH_{iat} = \beta_1Log(MW_{st})+A_a\alpha+T_t\lambda + \epsilon_{iat}.$$
+\smallskip
+
+For predicting RSH we use $MW_{st}$ as the minimum wage in a given state
+$s$ in year $t$. We use the log of the minimum wage (as is standard in
+the minimum wage literature) and take fixed effects for the area ($A_a$)
+and year ($T_t$). Where $A_a$ is an interaction term between the state
+and urban dummy variables that I refer to as the **state-area** (e.g,
+Oklahoma - Urban vs Oklahoma - Rural).
+
+# Results
+
+The results of the above specification are shown in **Table 1**. The
+results are statistically significant (\< 0.05) and the industry pooled
+effect size is $-0.032$, nearly identical to Lordan and Neumark's
+estimate of $-0.031$. The $-0.032$ value implies that for a 1% increase
+in the minimum wage, there is an associated 0.032 pp decrease in RSH,
+the share of automatable employment, for the typical industry. Thus a
+50% increase in the minimum wage from \$10 to \$15 would imply a 1.6 pp
+decrease in the share of automatable employment from 31.6% to 30% in
+2018. The within $R^2$ is 0.000, and the overall $R^2$ is 0.013. Both
+$R^2$ are near zero, meaning the model explains virtually none of the
+variation in RSH among industries, even within state-area and year
+clusters. As usual, one should take caution in assuming a low $R^2$
+means the estimate is without practical value. We still care about
+changes in the average level of RSH among industries, even if we can't
+confidently predict the RSH for an individual industry cell because of
+the large unexplained variation.
+
+While Lordan and Neumark estimate the effect on the typical industry,
+model (2), it is arguably more helpful for policymakers to know the
+estimate for the effect on the typical state-area's RSH, model (1).
+Doing so leads to a highly statistically significant result (\< 0.001)
+and an effect size of $-0.051$, which is 59% larger than the effect on
+the typical industry's RSH. This discrepancy is not unusual in
+ecological regression at different levels of aggregation (at extreme
+levels where the effect reverses, it is known as Simpson's paradox).
+Reusing the example of a 50% increase from \$10 to \$15, the typical
+state-area's share of automatable employment is expected to decline
+approximately 2.6 pp from 30.6% to 28% in 2018.
+
+Next, I ran our specification for various subgroups, shown in **Table
+2**. In doing so, we discover significant heterogeneity in the effects
+of a change in minimum wage policy on the share of automatable
+employment. We find statistically significant and considerably larger
+than average effects on RSH for women, black people, and young people
+(those below the age of 25). Notably, the effect size for a subgroup
+ranges from slightly below that of the full sample estimate (**Table
+1**), as for the white and prime-age (aged from 26 to 39) subgroups
+using the pooled state-area estimate, to eighteen times larger for black
+people in the finance industry ($-0.291$ rather than $-0.016$ in the
+full sample).
+
+# Conclusion
+
+In the past, technological innovation has both destroyed jobs and
+created new ones. It is reasonable to assume this trend will continue
+with: (1) workers needing to act as technicians, specialists, and
+operators for machines; (2) workers shifting toward professions that
+machines are not sophisticated enough to do yet. These new jobs will
+likely require higher levels of education and training than the jobs of
+the past. If so, automation would be more detrimental for lower-educated
+workers.
+
+The evidence in this paper supports the claim that a higher minimum wage
+has a negative impact on the share of automatable employment held by
+lower-education workers via automation, as was found by Lordan and
+Neumark (2018). By expanding the data set to include 2016--2018 (years
+with additional state minimum wage expansions) we find the effect of a
+minimum wage increase on the share of automatable employment in the
+typical industry is nearly identical to Lordan and Neumark's estimate.
+However, the industry effect size is small, even for a relatively large
+50% increase in the minimum wage.
+
+As in Lordan and Neumark (2018), I find the pooled data masks
+significant heterogeneity across industries and demographic subgroups.
+There are worse outcomes for black people, women, and those under age of
+25, especially those in the manufacturing and transportation industry.
+While there are better outcomes for those in the white and 26--39 age
+subgroups. Policymakers should take these heterogeneous effects into
+account when considering a change to the minimum wage. For the most
+heavily affected subgroups or industries, targeted labor market policy
+may be appropriate.
+
+The low $R^2$ values suggest there exist explanatory variables far more
+predictive of future automation. One such plausible variable is the rate
+of technological progress in AI and robotics. As such, one should be
+weary in concluding that not altering the minimum wage will halt most
+future automation. Instead, it is best to consider altering the minimum
+wage as having a marginal (heterogenous) negative effect on the share of
+automatable jobs. Whether this effect justifies a policy change requires
+a more holistic cost-benefit analysis based on the rest of the minimum
+wage literature and one's value judgments.
+
+------------------------------------------------------------------------
+
+# References
+
+Autor, David H., and David Dorn, 2013. "The Growth of Low-Skill Service
+Jobs and the Polarization of the US Labor Market." American Economic
+Review, 103 (5): 1553-97.
+
+Lordan, Grace & Neumark, David, 2018. "People versus Machines: The
+Impact of Minimum Wages on Automatable Jobs," IZA Discussion Papers
+11297, Institute of Labor Economics (IZA).
+
+Sarah Flood, Miriam King, Renae Rodgers, Steven Ruggles, J. Robert
+Warren and Michael Westberry. Integrated Public Use Microdata Series,
+Current Population Survey: Version 9.0 \[dataset\]. Minneapolis, MN:
+IPUMS, 2021. <https://doi.org/10.18128/D030.V9.0>
+
+\vfill \pagebreak
+
+```{=tex}
+\setlength\abovecaptionskip{0pt}
+\input{"../../out/tables/table1_aggregated_rsh_regressions.tex"}
+\setlength\belowcaptionskip{-7pt}
+\input{"../../out/tables/table2_disaggregated_rsh_regressions.tex"}
+\input{"../../out/tables/table2_disaggregated_rsh_regressions_2.tex"}
+```
