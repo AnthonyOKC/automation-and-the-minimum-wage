@@ -2,12 +2,18 @@
 
 ### **WARNING**:
 
-The CPS data are a random sample of 4% of the real full data set, which
-has 70 million observations. The sample only has 2.8 million. So,
-estimates are far off that of the full sample and not statistically
+The CPS data (cps.csv) are a random sample of 4% of the full data set, which
+has 70 million observations. Accordingly, the sample only has 2.8 million. 
+This is for your convenience in having the code run more quickly.
+However, estimates are far off that of the full sample and not statistically
 significant. For the actual full results, see the end of the real
 paper:
 <https://anthonyfloresokc.myportfolio.com/raising-the-minimum-wage-slightly-increases-automation>
+
+You can access the full data set here:
+https://cps.ipums.org/cps-action/variables/group
+
+Use the variables selected during importing [here](https://github.com/AnthonyOKC/automation-and-the-minimum-wage/blob/main/src/data-management/cps_clean_join_genvar.R) as a guide for which variables to checkout of IPUMS.
 
 ------------------------------------------------------------------------
 
