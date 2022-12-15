@@ -20,31 +20,40 @@ paper:
 #### (Automated)
 
 -   RunAllCode.R: Run the entire analysis from start to finish,
-    including the resulting .pdf
+    including the resulting .pdf. 
+    
 -   RunDirectory.R: Each folder in /src/ contains this file, which will
-    run that section of code in the correct order. NOTE: Doing so clears
-    the corresponding /out/ directory to ensure output is produced by
-    current code.
+    run that section of code in the correct order.
+    
+**NOTE**: Using these scripts clears corresponding /out/ directories to ensure output is
+produced by current code.
+
 
 #### (Manual)
 
 The following describes the order to run the analysis from start to
 finish.
 
-0\) Run install_r\_packages.R if first-time running analysis. 1) Clear
-output from corresponding ./out folders to ensure all output is new. 2)
-./src/data-management 1. rti_clean_join.R 2. mw_clean_join_genvar.R 3.
-cps_clean_join_genvar.R 3) ./src/analysis/ 1. compute_rti_rsh.R 2.
-regression_aggregated_rsh.R 3. regression_disaggregated_rsh.R 4)
-./src/paper/ 1. Knit to PDF -> Automation-and-the-Minimum-Wage.Rmd
+0) Run install_r_packages.R if first-time running analysis.
+1) Clear output from corresponding ./out folders to ensure all output is new.
+2) ./src/data-management
+    1. rti_clean_join.R
+    2. mw_clean_join_genvar.R
+    3. cps_clean_join_genvar.R
+3) ./src/analysis/
+    1. compute_rti_rsh.R
+    2. regression_aggregated_rsh.R
+    3. regression_disaggregated_rsh.R
+4) ./src/paper/
+    1. Knit to PDF -> Automation-and-the-Minimum-Wage.Rmd
 
 ## Directory Guide:
 
 -   ./ the Root Folder: The root directory.
 
--   ./src folder: This is the 'source' folder. It contains all of your
-    code files you develop during your analysis and the original
-    datasets you begin your analysis with.
+-   ./src folder: This is the 'source' folder. It contains all of our
+    code files we develop during our analysis and the original
+    datasets we begin your analysis with.
 
 -   ./out folder: This is the output directory. We will put anything
     that we create by running a R script. For example, it can contain
@@ -76,16 +85,16 @@ regression_aggregated_rsh.R 3. regression_disaggregated_rsh.R 4)
 -   analysis/ contains all R scripts that are our main analysis. For
     example, our regression scripts
 
--   lib/ contains R scripts that contain functions that can be used more
-    generally. For example helper functions that can be used in both
-    data cleaning and analysis could be put here. So can scripts that
-    contain functions that can be portable across multiple projects.
-
 -   figures/ contains R scripts that produce figures. One script per
     figure.
 
 -   tables/ contains R scripts that produce summary tables and
     regression tables. One script per table.
+    
+-   lib/ contains R scripts that contain functions that can be used more
+    generally. For example helper functions that can be used in both
+    data cleaning and analysis could be put here. So can scripts that
+    contain functions that can be portable across multiple projects.
 
 -   slides/ contains the Rmarkdown files to write up project results as
     a slide deck, i.e. the text of the slides.

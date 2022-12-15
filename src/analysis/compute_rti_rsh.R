@@ -104,11 +104,11 @@ lowEDUC_data <- function(data) {
 #### Compute RTI Value for low-education workers
 lowEDUC_RTI_P66 <- RTI_P66(lowEDUC_data(data))
 lowEDUC_RTI_P66 %>% 
-  saveRDS(file = "../../out/data-spec/rti_p66.rds")
+  saveRDS(file = "../../out/analysis/rti_p66.rds")
 
 #### Compute RSH values for low-education workers at the industry-level
 RSH_compute(data = lowEDUC_data(data), RTI_P66_val = lowEDUC_RTI_P66) %>% 
-  write_csv("../../out/data-spec/industry_lowEDUC_RSH.csv")
+  write_csv("../../out/analysis/industry_lowEDUC_RSH.csv")
 gc()
 
 #### Compute RSH values for low-education workers at the industry-level
@@ -117,5 +117,5 @@ RSH_compute(data = lowEDUC_data(data),
             groups = c("STATEAREA", "YEAR"),
             RTI_P66_val = lowEDUC_RTI_P66
             ) %>% 
-  write_csv("../../out/data-spec/statearea_lowEDUC_RSH.csv")
+  write_csv("../../out/analysis/statearea_lowEDUC_RSH.csv")
 gc()

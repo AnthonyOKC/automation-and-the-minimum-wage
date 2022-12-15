@@ -1,11 +1,14 @@
 # Clear ./out/ folders
-out_path <- R.utils::getAbsolutePath("./out/analysis")
+out_path <- R.utils::getAbsolutePath("../../out/analysis")
 out_files <- list.files(out_path, include.dirs = TRUE, full.names = TRUE, recursive = TRUE)
-out_folders <- list.files(out_path, include.dirs = TRUE, full.names = TRUE, recursive = FALSE)
-out_files <- out_files[!(out_files %in% out_folders)] # Exclude folders from list of files to delete
 file.remove(out_files)
 
 # Analysis
+print("Computing RTI and RSH")
 source("compute_rti_rsh.R", chdir = TRUE)
+
+print("Running Aggregated Regressions on RSH")
 source("regression_aggregated_rsh.R", chdir = TRUE)
+
+print("Running Disaggregated Regressions on RSH")
 source("regression_disaggregated_rsh.R", chdir = TRUE)

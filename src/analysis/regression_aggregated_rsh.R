@@ -27,11 +27,11 @@ RSH_regressions <- function(industry_RSH_data, statearea_RSH_data, modelnames) {
 
 ############################### RUN REGRESSION ################################
 #### Import 66th Percentile RTI Value for Low Education Workers
-lowEDUC_RTI_P66 <-  readRDS("../../out/data-spec/rti_p66.rds")
+lowEDUC_RTI_P66 <-  readRDS("../../out/analysis/rti_p66.rds")
 
 #### Import Industry and State-Area level data sets for RSH.
-industry_lowEDUC_RSH <- read_csv("../../out/data-spec/industry_lowEDUC_RSH.csv", lazy = FALSE)
-statearea_lowEDUC_RSH <- read_csv("../../out/data-spec/statearea_lowEDUC_RSH.csv", lazy = FALSE)
+industry_lowEDUC_RSH <- read_csv("../../out/analysis/industry_lowEDUC_RSH.csv", lazy = FALSE)
+statearea_lowEDUC_RSH <- read_csv("../../out/analysis/statearea_lowEDUC_RSH.csv", lazy = FALSE)
 
 #### Run Aggregated Regression
 modelnames <- c("Pooled (State-Area)", "Pooled (Industry)", "Construction",
