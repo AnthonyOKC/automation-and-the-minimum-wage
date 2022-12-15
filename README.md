@@ -5,7 +5,7 @@
 The CPS data are a random sample of 4% of the real full data set, which
 has 70 million observations. The sample only has 2.8 million. So,
 estimates are far off that of the full sample and not statistically
-significant. For the actually full results, see the end of the real
+significant. For the actual full results, see the end of the real
 paper:
 <https://anthonyfloresokc.myportfolio.com/raising-the-minimum-wage-slightly-increases-automation>
 
